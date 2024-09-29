@@ -1,0 +1,42 @@
+<ul>
+    {% for item in menu_items %}
+        <li class="{% if item.url == current_url or item.has_active_child %}active{% endif %}">
+            <a href="{% if item.children.all %}# {% else %}{{ item.url }}{% endif %}" class="menu-item">{{ item.title }}</a>
+
+            {% if item.children.all %}
+                <ul class="submenu" style="display: none;"> <!-- Скрываем подменю по умолчанию -->
+                    {% for child in item.children.all %}
+                        <li class="{% if child.url == current_url or child.has_active_child %}active{% endif %}">
+                            <a href="{{ child.url }}">{{ child.title }}</a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+<style>
+    .submenu {
+        display: none; /* Скрываем подменю по умолчанию */
+    }
+    .active .submenu {
+        display: block; /* Показываем подменю, если родительский пункт активен */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const menuItems = document.querySelectorAll('.menu-item');
+
+        menuItems.forEach(item => {
+            item.addEventListener('click', function (e) {
+                const submenu = item.nextElementSibling;
+                if (submenu) {
+                    e.preventDefault(); // Отменяем переход по ссылке
+                    submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block'; // Переключаем видимость подменю
+                }
+            });
+        });
+    });
+</script>
